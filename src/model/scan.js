@@ -2,7 +2,7 @@ const {observable,action,autorun}=require("mobx");
 const store=observable({
 	file:'1a.pdf',
 	page:1,
-	scale:1,
+	scale:1.5,
 	left:0,
 	top:0
 });

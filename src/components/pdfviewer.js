@@ -8,6 +8,10 @@ var styles={
 	}
 }
 var PDFViewer = React.createClass({
+  shouldComponentUpdate(nextProps){
+    return (nextProps.file!==this.props.file ||
+     nextProps.page!==this.props.page)
+  },
   render: function() {
   	if (this.props.rwidth) {
       styles.container.width=(window.innerWidth*(this.props.rwidth||0.5))+"px";
@@ -21,8 +25,8 @@ var PDFViewer = React.createClass({
 
   	if (!this.props.file) return E("div",{style:{width:"100%"}},"");
   	return E("div",{style:styles.container},
-    	E(PDF,{file:this.props.file, scale:this.props.scale||1.4, 
-        marginLeft:this.props.left,marginTop:this.props.top,
+    	E(PDF,{file:this.props.file, scale:this.props.scale||1.8,
+        left:this.props.left,top:this.props.top,
     	page:parseInt(this.props.page)})
     	);
   },

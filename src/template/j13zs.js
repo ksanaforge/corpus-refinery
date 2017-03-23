@@ -1,4 +1,5 @@
 var settings={};
+const scan=require("../model/scan")
 const setLayout=function(_settings){
 	settings=_settings;
 }

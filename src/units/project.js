@@ -14,7 +14,7 @@ const getConfigJSON=function(filelist,cb){
 	for (var i=0,f;f=filelist[i];i++) {
 		if (f.name.indexOf("-refinery.json")>0) {
 			var reader=new FileReader();
-			var name=this.filename=f.name;
+			var name=f.name;
 			reader.onload=function(e){
 				try {
 					const json=JSON.parse(e.target.result);

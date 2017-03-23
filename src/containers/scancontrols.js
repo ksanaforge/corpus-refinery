@@ -2,7 +2,7 @@ const React=require("react");
 const E=React.createElement;
 const scan=require("../model/scan");
 const styles={
-	container:{position:"absolute",background:"rgba(255,255,255,0.5)"},
+	container:{position:"absolute",right:"50%",background:"rgba(255,255,255,0.5)"},
 	input:{background:"rgba(255,255,255,0.3)"},
 	nextprev:{background:"rgba(255,255,255,0.3)"},
 	button:{background:"silver",color:"black",border:"1px solid"}
