@@ -36,23 +36,24 @@ class Editor extends React.Component{
 		}
 		return out.join("\n");
 	}
+
 	onChange(cm){
 		clearTimeout(this.timer);
 		this.timer=setTimeout(function(){
-			const previewpage=this.getCurrentPage(cm);
 			source.makeChange();
+			const previewpage=this.getCurrentPage(cm);
 			preview.setContent(previewpage);
 		}.bind(this),500);
 	}
 	onCursorActivity(cm){
 		const cursor=cm.getCursor();
 		const line=cm.getLine(cursor.line);
-		this.onChange(cm);
+		const previewpage=this.getCurrentPage(cm);
+		preview.setContent(previewpage);
 		if (line[0]!="~") return;
 
 		const pg=line.substr(1);
 		const obj=project.store.template.getPDFPage(pg,source.store.filename);
-		const previewpage=this.getCurrentPage(cm);
 
 		action(()=>{
 			scan.setFile(obj.pdffn);

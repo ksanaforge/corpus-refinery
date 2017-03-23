@@ -8,7 +8,7 @@ const styles={
 	button:{background:"silver",color:"black",border:"1px solid"},
 	container:{position:"absolute",zIndex:200}
 }
-const SaveChanges=require("../components/savechanges");
+const DirtyCount=require("../components/dirtycount");
 class TXTControls extends React.Component{
 	openproject(e){
 		project.openProject(e.target.files);
@@ -28,7 +28,7 @@ class TXTControls extends React.Component{
 				E("span",{style:styles.button},"Open Project"),
 				E("input",{type:"file",ref:"project",style:{display:"none"},
 					multiple:true,onChange:this.openproject.bind(this)}),
-				E(SaveChanges)
+				E(DirtyCount)
 			));
 	}
 }

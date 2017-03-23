@@ -18,7 +18,7 @@ const Preview=React.createClass({
 		}
 	}
 	,isNonChar:function(code){
-		if (code>=0x3000&&code<=0x303f) return true;//cjk puncuation
+		if (code>=0x3001&&code<=0x303f) return true;//cjk puncuation
 		if (code<0x7f) return true;
 		if (code>=0xff00&&code<=0xff9f) return true;//full width
 		return false;

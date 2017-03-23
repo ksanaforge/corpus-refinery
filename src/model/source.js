@@ -15,6 +15,7 @@ const save=action((content)=>{
 	savefile.setAttribute("download",store.filename);
 	document.body.appendChild(savefile);
 	savefile.click();
+	store.changecount=0;
 	setTimeout(function(){
 		document.body.removeChild(savefile);
 		delete savefile;
