@@ -86,7 +86,7 @@ const Preview=React.createClass({
 				}
 				previdx=idx+m.length;
 			});
-			z=line.substr(previdx).trim();
+			z=line.substr(previdx);
 			if (previdx<line.length) {
 				part.push(["z",removeTag(z),linestart[i]+previdx]);
 			}
