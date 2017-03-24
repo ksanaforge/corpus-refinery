@@ -126,27 +126,24 @@ var Pdf = React.createClass({
     }.bind(this),300);
   },
   onMouseMove:function(e){
-    if (this.dragging) {
+    if (e.buttons==1) {
         var canvas = ReactDOM.findDOMNode(this.refs.pdfCanvas);
         var xdelta = e.clientX - this.lastX;
         var ydelta = e.clientY - this.lastY;
         this.lastX = e.clientX;
         this.lastY = e.clientY;
-        this.marginLeft += xdelta;
-        this.marginTop += ydelta;
+        this.marginLeft += xdelta*this.state.scale*1.5;
+        this.marginTop += ydelta*this.state.scale*1.5;
         canvas.style.marginLeft = this.marginLeft + "px";
         canvas.style.marginTop = this.marginTop + "px";
     }
-    e.preventDefault();
   },
   onMouseDown:function(e){
-    this.dragging = true;
     this.lastX = e.clientX;
     this.lastY = e.clientY;
-    e.preventDefault();
   }, 
   onMouseUp:function(){
-     this.dragging = false;
+
   },
   _onDocumentComplete: function(pdf){
     if (!this.isMounted()) return;
