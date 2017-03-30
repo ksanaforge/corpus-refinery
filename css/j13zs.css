@@ -1,38 +1,38 @@
 
-.wh {
+.j13zs .wh {
 	font-size:100%;
 }
-.an {
+.j13zs .an {
 	font-size:50%;
 }
-.j13zs {writing-mode: vertical-lr;
+.j13zs .v {writing-mode: vertical-lr;
     -webkit-writing-mode: vertical-lr;
     font-size:30px;
     /*font-size:40px;*/
     height:1920;
     overflow-y:auto;
 }
-.warichu_big {
+.j13zs .warichu_big {
   font-size:68%;
   font-family: MingLiU;
   font-weight: 700;
 }
 
-.warichu_shu {
+.j13zs .warichu_shu {
   font-size:70%;
   border:solid 1px brown;
   border-radius: 5px;
   color:brown;
 }
 
-.warichu {
+.j13zs .warichu {
   position:relative;
   width:200%;
   font-family: MingLiU;
   white-space: nowrap
 }
 
-.warichu-left { 
+.j13zs .warichu-left { 
  position:absolute;
  top:0px;
  right:0px;
@@ -42,7 +42,7 @@
  height:100%;
  
 }
-.warichu-right {
+.j13zs .warichu-right {
  position:absolute;
  top:0px;
  left:50%;
@@ -52,60 +52,54 @@
 
 }
 
-.ruler {
-	position:absolute;
-	width:100%;
-	background-color:rgba(128,1128,255,128);
-	height:10px;
-}
 
-.warichu1::after {color:white;content:"-"}
-.warichu2::after {content:"　"}
-.warichu3::after {content:"　 "}
-.warichu4::after {content:"　　"}
-.warichu5::after {content:"　　 "}
-.warichu6::after {content:"　　　"}
-.warichu7::after {content:"　　　 "}
-.warichu8::after {content:"　　　　"}
-.warichu9::after {content:"　　　　 "}
-.warichu10::after{content:"　　　　　"}
-.warichu11::after{content:"　　　　　 "}
-.warichu12::after{content:"　　　　　　"}
-.warichu13::after{content:"　　　　　　 "}
-.warichu14::after{content:"　　　　　　　"}
-.warichu15::after{content:"　　　　　　　 "}
-.warichu16::after{content:"　　　　　　　　"}
-.warichu17::after{content:"　　　　　　　　 "}
-.warichu18::after{content:"　　　　　　　　　"}
-.warichu19::after{content:"　　　　　　　　　 "}
-.warichu20::after{content:"　　　　　　　　　　"}
-.warichu21::after{content:"　　　　　　　　　　 "}
-.warichu22::after{content:"　　　　　　　　　　　"}
-.warichu23::after{content:"　　　　　　　　　　　 "}
-.warichu24::after{content:"　　　　　　　　　　　　"}
-.warichu25::after{content:"　　　　　　　　　　　　 "}
-.warichu26::after{content:"　　　　　　　　　　　　　"}
-.warichu27::after{content:"　　　　　　　　　　　　　 "}
-.warichu28::after{content:"　　　　　　　　　　　　　　"}
-.warichu29::after{content:"　　　　　　　　　　　　　　 "}
-.warichu30::after{content:"　　　　　　　　　　　　　　　"}
-.warichu31::after{content:"　　　　　　　　　　　　　　　 "}
-.warichu32::after{content:"　　　　　　　　　　　　　　　　"}
-.warichu33::after{content:"　　　　　　　　　　　　　　　　 "}
-.warichu34::after{content:"　　　　　　　　　　　　　　　　　"}
-.warichu35::after{content:"　　　　　　　　　　　　　　　　　 "}
-.warichu36::after{content:"　　　　　　　　　　　　　　　　　　"}
-.warichu37::after{content:"　　　　　　　　　　　　　　　　　　 "}
-.warichu38::after{content:"　　　　　　　　　　　　　　　　　　　"}
-.warichu39::after{content:"　　　　　　　　　　　　　　　　　　　 "}
-.warichu40::after{content:"　　　　　　　　　　　　　　　　　　　　"}
-.warichu41::after{content:"　　　　　　　　　　　　　　　　　　　　 "}
-.warichu42::after{content:"　　　　　　　　　　　　　　　　　　　　　"}
-.warichu43::after{content:"　　　　　　　　　　　　　　　　　　　　　 "}
-.warichu44::after{content:"　　　　　　　　　　　　　　　　　　　　　　"}
-.warichu45::after{content:"　　　　　　　　　　　　　　　　　　　　　　 "}
-.warichu46::after{content:"　　　　　　　　　　　　　　　　　　　　　　　"}
-.warichu47::after{content:"　　　　　　　　　　　　　　　　　　　　　　　 "}
-.warichu48::after{content:"　　　　　　　　　　　　　　　　　　　　　　　　"}
-.warichu49::after{content:"　　　　　　　　　　　　　　　　　　　　　　　　 "}
-.warichu50::after{content:"　　　　　　　　　　　　　　　　　　　　　　　　　"}
+.j13zs .warichu1::after {color:white;content:"-"}
+.j13zs .warichu2::after {content:"　"}
+.j13zs .warichu3::after {content:"　 "}
+.j13zs .warichu4::after {content:"　　"}
+.j13zs .warichu5::after {content:"　　 "}
+.j13zs .warichu6::after {content:"　　　"}
+.j13zs .warichu7::after {content:"　　　 "}
+.j13zs .warichu8::after {content:"　　　　"}
+.j13zs .warichu9::after {content:"　　　　 "}
+.j13zs .warichu10::after{content:"　　　　　"}
+.j13zs .warichu11::after{content:"　　　　　 "}
+.j13zs .warichu12::after{content:"　　　　　　"}
+.j13zs .warichu13::after{content:"　　　　　　 "}
+.j13zs .warichu14::after{content:"　　　　　　　"}
+.j13zs .warichu15::after{content:"　　　　　　　 "}
+.j13zs .warichu16::after{content:"　　　　　　　　"}
+.j13zs .warichu17::after{content:"　　　　　　　　 "}
+.j13zs .warichu18::after{content:"　　　　　　　　　"}
+.j13zs .warichu19::after{content:"　　　　　　　　　 "}
+.j13zs .warichu20::after{content:"　　　　　　　　　　"}
+.j13zs .warichu21::after{content:"　　　　　　　　　　 "}
+.j13zs .warichu22::after{content:"　　　　　　　　　　　"}
+.j13zs .warichu23::after{content:"　　　　　　　　　　　 "}
+.j13zs .warichu24::after{content:"　　　　　　　　　　　　"}
+.j13zs .warichu25::after{content:"　　　　　　　　　　　　 "}
+.j13zs .warichu26::after{content:"　　　　　　　　　　　　　"}
+.j13zs .warichu27::after{content:"　　　　　　　　　　　　　 "}
+.j13zs .warichu28::after{content:"　　　　　　　　　　　　　　"}
+.j13zs .warichu29::after{content:"　　　　　　　　　　　　　　 "}
+.j13zs .warichu30::after{content:"　　　　　　　　　　　　　　　"}
+.j13zs .warichu31::after{content:"　　　　　　　　　　　　　　　 "}
+.j13zs .warichu32::after{content:"　　　　　　　　　　　　　　　　"}
+.j13zs .warichu33::after{content:"　　　　　　　　　　　　　　　　 "}
+.j13zs .warichu34::after{content:"　　　　　　　　　　　　　　　　　"}
+.j13zs .warichu35::after{content:"　　　　　　　　　　　　　　　　　 "}
+.j13zs .warichu36::after{content:"　　　　　　　　　　　　　　　　　　"}
+.j13zs .warichu37::after{content:"　　　　　　　　　　　　　　　　　　 "}
+.j13zs .warichu38::after{content:"　　　　　　　　　　　　　　　　　　　"}
+.j13zs .warichu39::after{content:"　　　　　　　　　　　　　　　　　　　 "}
+.j13zs .warichu40::after{content:"　　　　　　　　　　　　　　　　　　　　"}
+.j13zs .warichu41::after{content:"　　　　　　　　　　　　　　　　　　　　 "}
+.j13zs .warichu42::after{content:"　　　　　　　　　　　　　　　　　　　　　"}
+.j13zs .warichu43::after{content:"　　　　　　　　　　　　　　　　　　　　　 "}
+.j13zs .warichu44::after{content:"　　　　　　　　　　　　　　　　　　　　　　"}
+.j13zs .warichu45::after{content:"　　　　　　　　　　　　　　　　　　　　　　 "}
+.j13zs .warichu46::after{content:"　　　　　　　　　　　　　　　　　　　　　　　"}
+.j13zs .warichu47::after{content:"　　　　　　　　　　　　　　　　　　　　　　　 "}
+.j13zs .warichu48::after{content:"　　　　　　　　　　　　　　　　　　　　　　　　"}
+.j13zs .warichu49::after{content:"　　　　　　　　　　　　　　　　　　　　　　　　 "}
+.j13zs .warichu50::after{content:"　　　　　　　　　　　　　　　　　　　　　　　　　"}

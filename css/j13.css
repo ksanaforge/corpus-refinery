@@ -1,0 +1,11 @@
+.j13 .vertical {
+	font-size:100%;
+}
+
+.j13 .v {writing-mode: vertical-lr;
+    -webkit-writing-mode: vertical-lr;
+    height:1920;
+    margin-top:10px;
+    overflow-y:auto;
+    font-family: 微軟正黑體;
+}

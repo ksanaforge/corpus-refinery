@@ -5,7 +5,7 @@ const {observer}=require("mobx-react");
 class DirtyCount extends React.Component{
 	render(){
 		const c=source.store.changecount;
-		const p=c*3;
+		var p=c*3;
 		if (p>100)p=100;
 		const background="hsl(0, "+ p +"%,50%)";
 		return E("span",{},

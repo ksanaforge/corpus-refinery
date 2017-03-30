@@ -18,7 +18,6 @@ const save=action((content)=>{
 	store.changecount=0;
 	setTimeout(function(){
 		document.body.removeChild(savefile);
-		delete savefile;
 	}.bind(this),10);
 
 })

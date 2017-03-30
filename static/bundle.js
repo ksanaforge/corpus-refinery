@@ -3942,7 +3942,7 @@ var DirtyCount = function (_React$Component) {
 
 module.exports = observer(DirtyCount);
 
-},{"../model/source":16,"mobx-react":1,"react":"react"}],4:[function(require,module,exports){
+},{"../model/source":15,"mobx-react":1,"react":"react"}],4:[function(require,module,exports){
 "use strict";
 
 var React = require("react");
@@ -3981,170 +3981,7 @@ var PDFViewer = React.createClass({
 });
 module.exports = PDFViewer;
 
-},{"./react-pdf":6,"react":"react","react-dom":"react-dom"}],5:[function(require,module,exports){
-"use strict";
-
-var React = require("react");
-var ReactDOM = require("react-dom");
-var E = React.createElement;
-var PT = React.PropTypes;
-
-var Preview = React.createClass({
-	getInitialState: function getInitialState() {
-		var parts = this.parseText(this.props.data);
-		return { parts: parts };
-	},
-	contextTypes: {
-		action: PT.func
-	},
-	componentWillReceiveProps: function componentWillReceiveProps(nextProps) {
-		if (nextProps.data !== this.props.data) {
-			var parts = this.parseText(nextProps.data);
-			this.setState({ parts: parts });
-		}
-	},
-	isNonChar: function isNonChar(code) {
-		if (code >= 0x3001 && code <= 0x303f) return true; //cjk puncuation
-		if (code < 0x7f) return true;
-		if (code >= 0xff00 && code <= 0xff9f) return true; //full width
-		return false;
-	},
-	getTextFirstCh: function getTextFirstCh(str, count) {
-		var i = 0;
-		while (i < str.length && count) {
-			var code = str.charCodeAt(i);
-			if (code >= 0xd800 && code <= 0xd900) i++;else if (str[i] == "&") {
-				while (i < str.length) {
-					if (str[i] == ";") break;
-					i++;
-				}
-			} else if (this.isNonChar(code)) {
-				count++;
-			}
-			i++;count--;
-		}
-		return str.substr(0, i);
-	},
-	chcount: function chcount(str) {
-		var i = 0,
-		    c = 0;
-		while (i < str.length) {
-			var code = str.charCodeAt(i);
-			if (code >= 0xd800 && code <= 0xd900) i++;else if (str[i] == "&") {
-				while (i < str.length) {
-					if (str[i] == ";") break;
-					i++;
-				}
-			} else if (this.isNonChar(code)) {
-				c--;
-			}
-			i++;c++;
-		}
-		return c;
-	},
-	parseText: function parseText(str) {
-		var lines = str.split("\n");
-		var parts = [],
-		    part,
-		    offset = 0,
-		    i,
-		    linestart = [],
-		    linecount = 0;
-
-		var removeTag = function removeTag(t) {
-			t = t.replace(/[─「」，、．；《》：。〈〉\n㊣]/g, "");
-			t = t.replace(/\%\d+\.\d+/g, "");
-			return t;
-		};
-		for (i = 0; i < lines.length - 1; i++) {
-			linestart.push(linecount);
-			linecount += lines[i].length + 1;
-		}
-		linestart.push(linecount);
-		for (i = lines.length - 1; i >= 0; i--) {
-			part = [];
-			var line = lines[i];
-
-			var previdx = 0,
-			    z;
-			line.replace(/\{(.*?)\}/g, function (m, m1, idx) {
-				z = line.substring(previdx, idx);
-				if (idx) part.push(["z", removeTag(z), linestart[i] + previdx]);
-				if (m1 == "■") {
-					part.push(["shu", "疏", linestart[i] + idx]);
-				} else {
-					part.push(["big", removeTag(m1), linestart[i] + idx]);
-				}
-				previdx = idx + m.length;
-			});
-			z = line.substr(previdx);
-			if (previdx < line.length) {
-				part.push(["z", removeTag(z), linestart[i] + previdx]);
-			}
-			part.push(["br"]);
-			parts = parts.concat(part);
-		}
-		return parts;
-	},
-	renderPart: function renderPart(part) {
-		var out = [];
-		var type = part[0],
-		    text = part[1],
-		    start = part[2];
-		var cls = { "data-start": start };
-		if (type === "big") {
-			cls.className = "warichu_big";
-			out.push(E("span", cls, text));
-		} else if (type === "br") {
-			out.push(E("br"));
-		} else if (type === "shu") {
-			cls.className = "warichu_shu";
-			out.push(E("span", cls, "疏"));
-		} else if (type === "z") {
-			var w = Math.floor(this.chcount(text) / 2);
-			if (this.chcount(text) % 2 == 1) w++;
-			var right = this.getTextFirstCh(text, w);
-			var left = text.substr(right.length);
-			cls.className = "warichu warichu" + w;
-			out.push(E("span", cls, E("span", { className: "warichu-right" }, right), E("span", { className: "warichu-left" }, left)));
-		}
-		return out;
-	},
-
-	guessCharPos: function guessCharPos(cheight, x, y, w, h, side) {
-		var ccount = h / cheight;
-		var c = Math.floor(y / h * ccount);
-		if (side) c += ccount;
-		return c;
-	},
-	guestCharHeight: function guestCharHeight(str, h) {
-		var count = this.chcount(str);
-		if (count % 2 == 1) count++; //z always has even number
-		return h / count;
-	},
-	onclick: function onclick(e) {
-		var nod = e.target;
-		var side = nod.className.indexOf("left") > -1 ? 1 : 0;
-		var cheight = this.guestCharHeight(nod.innerText, nod.offsetHeight);
-
-		if (!nod.dataset.start) nod = nod.parentElement;
-
-		var ch = this.guessCharPos(cheight, e.clientX - nod.offsetLeft, e.clientY - nod.offsetTop, nod.offsetWidth, nod.offsetHeight, side);
-		if (!nod.dataset.start) return;
-		var start = parseInt(nod.dataset.start, 10);
-		var text = this.props.data.substr(start);
-		var chpos = this.getTextFirstCh(text, ch + 2).length;
-		console.log(chpos);
-	},
-	render: function render() {
-		return E("div", { className: "j13zs" },
-		//E("div",{className:"ruler",ref:"ruler"}),
-		E("div", { onClick: this.onclick }, this.state.parts.map(this.renderPart)));
-	}
-});
-module.exports = Preview;
-
-},{"react":"react","react-dom":"react-dom"}],6:[function(require,module,exports){
+},{"./react-pdf":5,"react":"react","react-dom":"react-dom"}],5:[function(require,module,exports){
 'use strict';
 
 /*
@@ -4310,7 +4147,7 @@ var Pdf = React.createClass({
 
 module.exports = Pdf;
 
-},{"react":"react","react-dom":"react-dom"}],7:[function(require,module,exports){
+},{"react":"react","react-dom":"react-dom"}],6:[function(require,module,exports){
 "use strict";
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -4356,7 +4193,7 @@ var SourceSelector = function (_React$Component) {
 
 module.exports = SourceSelector;
 
-},{"react":"react"}],8:[function(require,module,exports){
+},{"react":"react"}],7:[function(require,module,exports){
 "use strict";
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -4472,7 +4309,7 @@ var Editor = function (_React$Component) {
 
 module.exports = observer(Editor);
 
-},{"../model/preview":13,"../model/project":14,"../model/scan":15,"../model/source":16,"ksana-codemirror":"ksana-codemirror","mobx":2,"mobx-react":1,"react":"react"}],9:[function(require,module,exports){
+},{"../model/preview":12,"../model/project":13,"../model/scan":14,"../model/source":15,"ksana-codemirror":"ksana-codemirror","mobx":2,"mobx-react":1,"react":"react"}],8:[function(require,module,exports){
 "use strict";
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -4495,8 +4332,8 @@ var SCANControls = require("./scancontrols");
 var scan = require("../model/scan");
 var Editor = require("./editor");
 var source = require("../model/source");
+var project = require("../model/project");
 var preview = require("../model/preview");
-var Preview = require("../components/preview");
 var styles = {};
 
 var MainScreen = function (_React$Component) {
@@ -4511,7 +4348,9 @@ var MainScreen = function (_React$Component) {
 	_createClass(MainScreen, [{
 		key: "render",
 		value: function render() {
-			return E("div", { style: { display: "flex" } }, E("div", { style: { flex: 1, paddingTop: 50 } }, E(Preview, { data: preview.store.content })), E("div", { style: { flex: 1, maxWidth: 400 } }, E(PDFViewer, { file: scan.store.file,
+			var Preview = project.store.template.Preview;
+
+			return E("div", { style: { display: "flex" } }, E("div", { style: { flex: 1, paddingTop: 25 } }, Preview ? E(Preview, { data: preview.store.content }) : null), E("div", { style: { flex: 1, maxWidth: 400 } }, E(PDFViewer, { file: scan.store.file,
 				page: scan.store.page, scale: scan.store.scale,
 				left: scan.store.left, top: scan.store.top
 			})), E("div", { style: { flex: 1 } }, E(Editor)), E(SCANControls, {
@@ -4524,7 +4363,7 @@ var MainScreen = function (_React$Component) {
 
 module.exports = observer(MainScreen);
 
-},{"../components/pdfviewer":4,"../components/preview":5,"../model/preview":13,"../model/scan":15,"../model/source":16,"./editor":8,"./scancontrols":10,"./txtcontrols":11,"mobx-react":1,"react":"react"}],10:[function(require,module,exports){
+},{"../components/pdfviewer":4,"../model/preview":12,"../model/project":13,"../model/scan":14,"../model/source":15,"./editor":7,"./scancontrols":9,"./txtcontrols":10,"mobx-react":1,"react":"react"}],9:[function(require,module,exports){
 "use strict";
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -4605,7 +4444,7 @@ var Controls = function (_React$Component) {
 
 module.exports = Controls;
 
-},{"../model/scan":15,"react":"react"}],11:[function(require,module,exports){
+},{"../model/scan":14,"react":"react"}],10:[function(require,module,exports){
 "use strict";
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -4670,7 +4509,7 @@ var TXTControls = function (_React$Component) {
 
 module.exports = observer(TXTControls);
 
-},{"../components/dirtycount":3,"../components/sourceselector":7,"../model/project":14,"mobx-react":1,"react":"react"}],12:[function(require,module,exports){
+},{"../components/dirtycount":3,"../components/sourceselector":6,"../model/project":13,"mobx-react":1,"react":"react"}],11:[function(require,module,exports){
 "use strict";
 
 var React = require("react");
@@ -4685,7 +4524,7 @@ useStrict(true);
 
 ReactDOM.render(E(MainScreen), document.getElementById('root'));
 
-},{"./containers/mainscreen":9,"mobx":2,"react":"react","react-dom":"react-dom"}],13:[function(require,module,exports){
+},{"./containers/mainscreen":8,"mobx":2,"react":"react","react-dom":"react-dom"}],12:[function(require,module,exports){
 "use strict";
 
 var _require = require("mobx"),
@@ -4702,7 +4541,7 @@ var setContent = action(function (content) {
 });
 module.exports = { store: store, setContent: setContent };
 
-},{"mobx":2}],14:[function(require,module,exports){
+},{"mobx":2}],13:[function(require,module,exports){
 "use strict";
 
 var _require = require("mobx"),
@@ -4775,7 +4614,7 @@ var openProject = function openProject(inputfiles) {
 };
 module.exports = { openProject: openProject, store: store, selectSource: selectSource };
 
-},{"../template":17,"../units/project":19,"./scan":15,"./source":16,"mobx":2}],15:[function(require,module,exports){
+},{"../template":16,"../units/project":22,"./scan":14,"./source":15,"mobx":2}],14:[function(require,module,exports){
 "use strict";
 
 var _require = require("mobx"),
@@ -4803,7 +4642,7 @@ var setPage = action(function (pg, left, top) {
 var syncSourcePage = action(function (sourcepage) {});
 module.exports = { store: store, setFile: setFile, setPage: setPage, syncSourcePage: syncSourcePage };
 
-},{"mobx":2}],16:[function(require,module,exports){
+},{"mobx":2}],15:[function(require,module,exports){
 'use strict';
 
 var _require = require("mobx"),
@@ -4837,17 +4676,174 @@ var makeChange = action(function () {
 });
 module.exports = { store: store, setFile: setFile, makeChange: makeChange, save: save };
 
-},{"mobx":2}],17:[function(require,module,exports){
+},{"mobx":2}],16:[function(require,module,exports){
 "use strict";
 
 var j13zs = require("./j13zs");
-module.exports = { j13zs: j13zs };
+var j13 = require("./j13");
+var swjzz = require("./swjzz");
+module.exports = { j13zs: j13zs, j13: j13, swjzz: swjzz };
 
-},{"./j13zs":18}],18:[function(require,module,exports){
+},{"./j13":17,"./j13zs":19,"./swjzz":21}],17:[function(require,module,exports){
 "use strict";
 
 var settings = {};
-var scan = require("../model/scan");
+var Preview = require("./j13_preview");
+var setLayout = function setLayout(_settings) {
+	settings = _settings;
+};
+var getPDFPage = function getPDFPage(pageid) {
+	if (!pageid) return;
+	var m = pageid.match(/(\d+)\.(\d+)/);
+	if (!m) return;
+
+	var page = parseInt(m[2], 10) + 2;
+	var fn = parseInt(m[1], 10);
+
+	var pdffn = "pdf/" + fn + ".pdf";
+	return { pdffn: pdffn, page: page };
+};
+module.exports = { getPDFPage: getPDFPage, setLayout: setLayout, Preview: Preview };
+
+},{"./j13_preview":18}],18:[function(require,module,exports){
+"use strict";
+
+/* kangxi preview*/
+var React = require("react");
+var ReactDOM = require("react-dom");
+var E = React.createElement;
+var PT = React.PropTypes;
+
+var Preview = React.createClass({
+	getInitialState: function getInitialState() {
+		var parts = this.parseText(this.props.data);
+		return { parts: parts };
+		/*
+  		return {parts:[
+  				["z","林傳韓生推詩之意而爲內外傳數萬言其語頗與齊魯閒殊然其歸一也"+
+  "　又少也顏延之庭誥文選書務一不尚煩密何承天答顏永嘉書竊願吾子舍兼而遵一也"+
+  "　又增韻純也易繫辭天下之動貞夫一老子道德經天得一以淸地得一以寧"],
+  				
+  				["br"],
+  				["wh","一"],
+  				["an"],
+  				["wh","弌"],
+  				["z","唐韻韻會於悉切集韻正韻益悉切𡘋漪入聲"
+  				+"說文惟初大始道立於一造分天地化成萬物廣韻數之始也"
+  				+"物之極也易繫辭天一地二老子道德經道生一一生二　"
+  				+"又廣韻同也禮樂記禮樂𠛬政其極一也史記儒"],
+  				
+  				["br"],
+  				["wh","　　一部"],
+  				
+  				["br"],
+  				["wh","　子集上" ],
+  				
+  				["br"],
+  				["wh","康熙字典"]
+  
+  			]}
+  */
+	},
+	componentWillReceiveProps: function componentWillReceiveProps(nextProps) {
+		if (nextProps.data !== this.props.data) {
+			var parts = this.parseText(nextProps.data);
+			this.setState({ parts: parts });
+		}
+	},
+	contextTypes: {
+		action: PT.func
+	},
+	isNonChar: function isNonChar(code) {
+		if (code >= 0x3000 && code <= 0x303f) return true; //cjk puncuation
+		if (code < 0x7f) return true;
+		if (code >= 0xff00 && code <= 0xff9f) return true; //full width
+		return false;
+	},
+	getTextFirstCh: function getTextFirstCh(str, count) {
+		var i = 0;
+		while (i < str.length && count) {
+			var code = str.charCodeAt(i);
+			if (code >= 0xd800 && code <= 0xd900) i++;else if (str[i] == "&") {
+				while (i < str.length) {
+					if (str[i] == ";") break;
+					i++;
+				}
+			} else if (this.isNonChar(code)) {
+				count++;
+			}
+
+			i++;count--;
+		}
+		return str.substr(0, i);
+	},
+	chcount: function chcount(str) {
+		var i = 0,
+		    c = 0;
+		while (i < str.length) {
+			var code = str.charCodeAt(i);
+			if (code >= 0xd800 && code <= 0xd900) i++;else if (str[i] == "&") {
+				while (i < str.length) {
+					if (str[i] == ";") break;
+					i++;
+				}
+			} else if (this.isNonChar(code)) {
+				c--;
+			}
+			i++;c++;
+		}
+		return c;
+	},
+
+	parseText: function parseText(str) {
+		var lines = str.split("\n");
+		var parts = [],
+		    part,
+		    offset = 0,
+		    i,
+		    linestart = [],
+		    linecount = 0;
+		var getZ = function getZ(z) {
+			z = z.replace(/[─「」，、．；《》：。〈〉\n\/]/g, "");
+			z = z.replace(/\^\d+\..+/g, "");
+			z = z.replace(/\#\d+.+/g, "");
+			return z;
+		};
+		var start;
+		for (i = lines.length - 1; i >= 0; i--) {
+			var z = getZ(lines[i]);
+			if (!z) continue;
+			parts.push(["text", z, start]);
+			start += lines[i].length;
+			parts.push(["br"]);
+		}
+
+		return parts;
+	},
+	renderPart: function renderPart(part) {
+		var out = [];
+		var type = part[0],
+		    text = part[1],
+		    start = part[2];
+		var cls = { "data-start": start };
+		if (type === "br") {
+			out.push(E("br"));
+		} else {
+			out.push(E("span", { className: "vertical" }, text));
+		}
+		return out;
+	},
+	render: function render() {
+		return E("div", { className: "j13" }, E("div", { className: "v" }, this.state.parts.map(this.renderPart)));
+	}
+});
+module.exports = Preview;
+
+},{"react":"react","react-dom":"react-dom"}],19:[function(require,module,exports){
+"use strict";
+
+var settings = {};
+var Preview = require("./j13zs_preview");
 var setLayout = function setLayout(_settings) {
 	settings = _settings;
 };
@@ -4904,9 +4900,208 @@ var getPDFPage = function getPDFPage(pageid, fn) {
 		}
 	}
 };
-module.exports = { getPDFPage: getPDFPage, setLayout: setLayout };
+module.exports = { getPDFPage: getPDFPage, setLayout: setLayout, Preview: Preview };
 
-},{"../model/scan":15}],19:[function(require,module,exports){
+},{"./j13zs_preview":20}],20:[function(require,module,exports){
+"use strict";
+
+var React = require("react");
+var E = React.createElement;
+var PT = React.PropTypes;
+
+var Preview = React.createClass({
+	getInitialState: function getInitialState() {
+		var parts = this.parseText(this.props.data);
+		return { parts: parts };
+	},
+	contextTypes: {
+		action: PT.func
+	},
+	componentWillReceiveProps: function componentWillReceiveProps(nextProps) {
+		if (nextProps.data !== this.props.data) {
+			var parts = this.parseText(nextProps.data);
+			this.setState({ parts: parts });
+		}
+	},
+	isNonChar: function isNonChar(code) {
+		if (code >= 0x3001 && code <= 0x303f) return true; //cjk puncuation
+		if (code < 0x7f) return true;
+		if (code >= 0xff00 && code <= 0xff9f) return true; //full width
+		return false;
+	},
+	getTextFirstCh: function getTextFirstCh(str, count) {
+		var i = 0;
+		while (i < str.length && count) {
+			var code = str.charCodeAt(i);
+			if (code >= 0xd800 && code <= 0xd900) i++;else if (str[i] == "&") {
+				while (i < str.length) {
+					if (str[i] == ";") break;
+					i++;
+				}
+			} else if (this.isNonChar(code)) {
+				count++;
+			}
+			i++;count--;
+		}
+		return str.substr(0, i);
+	},
+	chcount: function chcount(str) {
+		var i = 0,
+		    c = 0;
+		while (i < str.length) {
+			var code = str.charCodeAt(i);
+			if (code >= 0xd800 && code <= 0xd900) i++;else if (str[i] == "&") {
+				while (i < str.length) {
+					if (str[i] == ";") break;
+					i++;
+				}
+			} else if (this.isNonChar(code)) {
+				c--;
+			}
+			i++;c++;
+		}
+		return c;
+	},
+	parseText: function parseText(str) {
+		var lines = str.split("\n");
+		var parts = [],
+		    part,
+		    offset = 0,
+		    i,
+		    linestart = [],
+		    linecount = 0;
+
+		var removeTag = function removeTag(t) {
+			t = t.replace(/[─「」，、．；《》：。〈〉\n㊣]/g, "");
+			t = t.replace(/\%\d+\.\d+/g, "");
+			t = t.replace(/^\d+\.\d+/g, "");
+			t = t.replace(/#\d+.+/g, "");
+			return t;
+		};
+		for (i = 0; i < lines.length - 1; i++) {
+			linestart.push(linecount);
+			linecount += lines[i].length + 1;
+		}
+		linestart.push(linecount);
+		for (i = lines.length - 1; i >= 0; i--) {
+			part = [];
+			var line = lines[i];
+
+			var previdx = 0,
+			    z;
+			line.replace(/\{(.*?)\}/g, function (m, m1, idx) {
+				z = line.substring(previdx, idx);
+				if (idx) part.push(["z", removeTag(z), linestart[i] + previdx]);
+				if (m1 == "■") {
+					part.push(["shu", "疏", linestart[i] + idx]);
+				} else {
+					part.push(["big", removeTag(m1), linestart[i] + idx]);
+				}
+				previdx = idx + m.length;
+			});
+			z = line.substr(previdx);
+			if (previdx < line.length) {
+				part.push(["z", removeTag(z), linestart[i] + previdx]);
+			}
+			part.push(["br"]);
+			parts = parts.concat(part);
+		}
+		return parts;
+	},
+	renderPart: function renderPart(part) {
+		var out = [];
+		var type = part[0],
+		    text = part[1],
+		    start = part[2];
+		var cls = { "data-start": start };
+		if (type === "big") {
+			cls.className = "warichu_big";
+			out.push(E("span", cls, text));
+		} else if (type === "br") {
+			out.push(E("br"));
+		} else if (type === "shu") {
+			cls.className = "warichu_shu";
+			out.push(E("span", cls, "疏"));
+		} else if (type === "z") {
+			var w = Math.floor(this.chcount(text) / 2);
+			if (this.chcount(text) % 2 == 1) w++;
+			var right = this.getTextFirstCh(text, w);
+			var left = text.substr(right.length);
+			cls.className = "warichu warichu" + w;
+			out.push(E("span", cls, E("span", { className: "warichu-right" }, right), E("span", { className: "warichu-left" }, left)));
+		}
+		return out;
+	},
+	render: function render() {
+		return E("div", { className: "j13zs" }, E("div", { className: "v" }, this.state.parts.map(this.renderPart)));
+	}
+});
+module.exports = Preview;
+
+},{"react":"react"}],21:[function(require,module,exports){
+"use strict";
+
+var settings = {};
+var Preview = require("./j13zs_preview");
+var setLayout = function setLayout(_settings) {
+	settings = _settings;
+};
+
+var pdfs = {
+	"1": [1, 103], //周易
+	"2": [1, 77, 183], //尚書
+	"3": [1, 109, 215, 307, 405, 499, 557, 703], //毛詩
+	"4": [1, 89, 195, 259, 321, 413, 523, 611], //周禮
+	"5": [1, 99, 211, 261, 377, 493], //儀禮
+	"6": [1, 125, 235, 375, 467, 575, 677, 761, 879, 951], //禮記
+	"7": [1, 171, 311, 419, 537, 629, 777, 867], //左傳
+	"8": [1, 85, 201, 299], //公羊傳
+	"9": [1, 69], //穀梁傳
+	"10": [1], //孝經
+	"11": [1, 95], //論語
+	"12": [1, 93], //爾雅
+	"13": [1, 107, 209] //孟子
+};
+var starts = { "1a": 15, "2a": 5, "3a": 7, "4a": 7, "5a": 5, "6a": 3, "7a": 7,
+	"8a": 7, "9a": 7, "10a": 5, "11a": 5, "12a": 5, "13a": 5 };
+var leftTopFromSide = function leftTopFromSide(side) {
+	var left = -400,
+	    top = -50;
+	if (side == 1) {
+		left = -10;
+	} else if (side == 2) {
+		top = -760;
+	} else if (side == 3) {
+		left = -10;
+		top = -760;
+	}
+	return { left: left, top: top };
+};
+var getPDFPage = function getPDFPage(pageid, fn) {
+	if (!pageid || !pageid.match) return;
+	var m = pageid.match(/(\d+)([abcd])/);
+	if (!m) return;
+	var pg = parseInt(m[1], 10);
+	var side = m[2].charCodeAt(0) - 0x61;
+	var prefix = parseInt(fn, 10);
+	var ranges = pdfs[prefix];
+	for (var i = ranges.length - 1; i >= 0; i--) {
+		if (pg >= ranges[i]) {
+			var pdfbase = prefix + String.fromCharCode(0x61 + i);
+			var pdffn = pdfbase + ".pdf";
+
+			var _leftTopFromSide = leftTopFromSide(side),
+			    left = _leftTopFromSide.left,
+			    top = _leftTopFromSide.top;
+
+			var page = pg - ranges[i] + (starts[pdfbase] || 1);
+			return { pdffn: pdffn, page: page, left: left, top: top };
+		}
+	}
+};
+module.exports = { getPDFPage: getPDFPage, setLayout: setLayout, Preview: Preview };
+
+},{"./j13zs_preview":20}],22:[function(require,module,exports){
 "use strict";
 
 var loadContent = function loadContent(file, cb) {
@@ -5001,4 +5196,4 @@ var prepareProject = function prepareProject(files, cb) {
 };
 module.exports = { prepareProject: prepareProject, loadContent: loadContent };
 
-},{}]},{},[12]);
+},{}]},{},[11]);

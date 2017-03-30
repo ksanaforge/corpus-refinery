@@ -1,5 +1,4 @@
 const React=require("react");
-const ReactDOM=require("react-dom");
 const E=React.createElement;
 const PT=React.PropTypes;
 
@@ -64,6 +63,8 @@ const Preview=React.createClass({
 		const removeTag=function(t){
 			t=t.replace(/[─「」，、．；《》：。〈〉\n㊣]/g,"");
 			t=t.replace(/\%\d+\.\d+/g,"");
+			t=t.replace(/^\d+\.\d+/g,"");
+			t=t.replace(/#\d+.+/g,"");
 			return t;
 		}
 		for (i=0;i<lines.length-1;i++) {
@@ -120,37 +121,9 @@ const Preview=React.createClass({
 		}
 		return out;
 	}
-
-	,guessCharPos:function(cheight,x,y,w,h,side){
-		const ccount=h/cheight;
-		var c=Math.floor((y/h) * ccount);
-		if (side) c+=ccount;
-		return c;
-	}
-	,guestCharHeight:function(str,h){
-		var count=this.chcount(str);
-		if (count%2==1)count++;//z always has even number
-		return (h/count);
-	}
-	,onclick:function(e){
-		var nod=e.target;
-		const side=nod.className.indexOf("left")>-1?1:0;
-		const cheight=this.guestCharHeight(nod.innerText,nod.offsetHeight);
-
-		if (!nod.dataset.start) nod=nod.parentElement;
-
-		const ch=this.guessCharPos(cheight,e.clientX-nod.offsetLeft,
-			e.clientY-nod.offsetTop,nod.offsetWidth,nod.offsetHeight,side);
-		if (!nod.dataset.start)return;
-		const start=parseInt(nod.dataset.start,10);
-		const text=this.props.data.substr(start);
-		const chpos=this.getTextFirstCh(text,ch+2).length;
-		console.log(chpos)
-	}
 	,render:function(){
 		return E("div",{className:"j13zs"},
-			//E("div",{className:"ruler",ref:"ruler"}),
-			E("div",{onClick:this.onclick}
+			E("div",{className:"v"}
 				,this.state.parts.map(this.renderPart)) 
 		);
 	}
