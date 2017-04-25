@@ -92,7 +92,8 @@ const Preview=React.createClass({
 		const getZ=function(z){
 			z=z.replace(/[─「」，、．；《》：。〈〉\n\/]/g,"");
 			z=z.replace(/\^\d+\..+/g,"");
-			z=z.replace(/\#\d+.+/g,"");
+			z=z.replace(/\{\!\d+.+?\}/g,"");
+			z=z.replace(/\{\d+(.+?)\}/g,"$1");
 			return z;
 		}
 		var start;

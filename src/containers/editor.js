@@ -51,7 +51,6 @@ class Editor extends React.Component{
 		const previewpage=this.getCurrentPage(cm);
 		preview.setContent(previewpage);
 		if (line[0]!="~") return;
-
 		const pg=line.substr(1);
 		const obj=project.store.template.getPDFPage(pg,source.store.filename);
 

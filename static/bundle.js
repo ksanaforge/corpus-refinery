@@ -4277,7 +4277,6 @@ var Editor = function (_React$Component) {
 			var previewpage = this.getCurrentPage(cm);
 			preview.setContent(previewpage);
 			if (line[0] != "~") return;
-
 			var pg = line.substr(1);
 			var obj = project.store.template.getPDFPage(pg, source.store.filename);
 
@@ -4806,7 +4805,8 @@ var Preview = React.createClass({
 		var getZ = function getZ(z) {
 			z = z.replace(/[─「」，、．；《》：。〈〉\n\/]/g, "");
 			z = z.replace(/\^\d+\..+/g, "");
-			z = z.replace(/\#\d+.+/g, "");
+			z = z.replace(/\{\!\d+.+?\}/g, "");
+			z = z.replace(/\{\d+(.+?)\}/g, "$1");
 			return z;
 		};
 		var start;
